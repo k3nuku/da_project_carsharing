@@ -17,5 +17,8 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+  url(r'^admin/', admin.site.urls, name='admin'),
+  url(r'^$', views.index, name='index'),
+  url(r'^car/register$', views.register_car, name='register_car'),
+  url(r'^car/borrow$', views.borrow_car, name='borrow_car')
 ]
