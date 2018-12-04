@@ -1,18 +1,32 @@
 from django.db import models
-from colorfield.fields import ColorField
 from geoposition.fields import GeopositionField
 
-class Car(models.Model, CarDescription):
-  model = models.CharField(max_length=100)
-  grade = models.DecimalField(max_digits=1)
-  license_plate = models.CharField(max_length=100)
-  description = models.ForeignKey(
-    CarDescription, on_delete=models.CASCADE)
 
 class CarDescription(models.Model):
-  color = ColorField(default='#000000')
-  submodel = models.CharField(max_length=50)
+    color = models.CharField(max_length=10)
+    submodel = models.CharField(max_length=50)
+
+
+class Car(models.Model):
+    model = models.CharField(max_length=100)
+    grade = models.DecimalField(decimal_places=0, max_digits=3)
+    license_plate = models.CharField(max_length=100)
+    description = models.ForeignKey(CarDescription, on_delete=models.CASCADE)
+
+
+class CarCatalog(models.Model):
+    cars = models.ForeignKey(Car, on_delete=models.DO_NOTHING)
+
 
 class SharingStation(models.Model):
-  name = models.CharField(max_length=100)
-  location = GeopositionField()
+    name = models.CharField(max_length=100)
+    location = GeopositionField()
+    catalog = models.ForeignKey(CarCatalog, on_delete=models.CASCADE)
+
+
+class ShareHistory(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.DO_NOTHING)
+    station = models.ForeignKey(SharingStation, on_delete=models.DO_NOTHING)
+    fee = models.DecimalField(decimal_places=10, max_digits=10)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()

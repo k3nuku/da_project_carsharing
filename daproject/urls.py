@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
+from carsharing import views
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls, name='admin'),
   url(r'^$', views.index, name='index'),
   url(r'^car/register$', views.register_car, name='register_car'),
-  url(r'^car/borrow$', views.borrow_car, name='borrow_car')
+  url(r'^car/borrow$', views.borrow_car, name='borrow_car'),
+  path('search/', views.search, name='search')
 ]
