@@ -1,0 +1,5 @@
+Django==2.1.3
+django-colorfield==0.1.15
+django-geoposition==0.3.0
+pytz==2018.7
+six==1.11.0
