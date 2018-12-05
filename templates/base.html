@@ -38,12 +38,12 @@
               {{ user.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item text-primary" href="{% url 'upload_track' %}">Upload</a>
+                <a class="dropdown-item text-primary" href="#">Upload</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
-                <a class="dropdown-item" href="{% url 'favorites' %}">Favorites</a>
+                <a class="dropdown-item" href="#">Profile</a>
+                <a class="dropdown-item" href="#">Favorites</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+                <a class="dropdown-item text-danger" href="#">Logout</a>
             </div>
         </li>
         {% else %}

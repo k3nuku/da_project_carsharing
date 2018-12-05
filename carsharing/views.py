@@ -7,7 +7,13 @@ from carsharing.forms import RegisterCarForm
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    cars = Car.objects.all()
+
+    context = {
+        'cars': cars
+    }
+
+    return render(request, 'index.html', context)
 
 
 def borrow_car(request):
@@ -16,22 +22,19 @@ def borrow_car(request):
 
 def register_car(request):
     if request.method == 'POST':
-        form = RegisterCarForm(request.POST)
+        form = RegisterCarForm(request.POST, request.FILES)
 
         if form.is_valid():
-            desc_obj = CarDescription()
-            desc_obj.color = form.color
-            desc_obj.submodel = form.submodel
-            desc_obj.save()
+            desc_obj = form.save()
 
             car_obj = Car()
             car_obj.description = desc_obj
-            car_obj.license_plate = form.license_plate
-            car_obj.model = form.model
-            car_obj.grade = form.grade
+            car_obj.license_plate = form.cleaned_data['license_plate']
+            car_obj.model = form.cleaned_data['model']
+            car_obj.grade = form.cleaned_data['grade']
             car_obj.save()
 
-            return render(request, 'index.html', {'message': 'Car information has been successfully registered.'})
+            return redirect('index')
 
     context = {
       'form': RegisterCarForm
@@ -49,4 +52,4 @@ def search(request):
         if d1.exists():
             return render(request, 'index.html', {'cars': d1})
         else:
-            return HttpResponse('no such track.')
+            return HttpResponse('no such car.')

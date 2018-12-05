@@ -127,6 +127,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'storage')
+
 # geoposition plugin settings
 # Google Maps API Key for using geoposition
 GEOPOSITION_GOOGLE_MAPS_API_KEY = 'YOUR_API_KEY'

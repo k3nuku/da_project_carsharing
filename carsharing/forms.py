@@ -9,9 +9,11 @@ class SearchForm(forms.Form):
     query = forms.CharField(required=True)
 
 
-class RegisterCarForm(forms.Form):
-    color = forms.CharField(max_length=10)
-    submodel = forms.CharField(max_length=50)
+class RegisterCarForm(forms.ModelForm):
+    class Meta:
+        model = models.CarDescription
+        fields = ['color', 'submodel', 'photo']
+
     model = forms.CharField(max_length=100)
-    grade = forms.DecimalField(decimal_places=1, max_digits=1)
+    grade = forms.IntegerField()
     license_plate = forms.CharField(max_length=100)

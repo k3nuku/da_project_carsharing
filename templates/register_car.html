@@ -4,7 +4,7 @@
 <div class="container p-5">
     <h1>Car Registration</h1>
     {{ form.error_message }}
-    <form method="post" action="/car/register">
+    <form method="post" action="/car/register" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="registration"/>
