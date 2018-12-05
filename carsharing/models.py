@@ -9,7 +9,7 @@ class CarDescription(models.Model):
 
 class Car(models.Model):
     model = models.CharField(max_length=100)
-    grade = models.DecimalField(decimal_places=0, max_digits=3)
+    grade = models.IntegerField()
     license_plate = models.CharField(max_length=100)
     description = models.ForeignKey(CarDescription, on_delete=models.CASCADE)
 
