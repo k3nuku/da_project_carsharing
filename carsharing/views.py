@@ -1,16 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from carsharing.forms import SearchForm
-from carsharing.models import Car, CarDescription
-from carsharing.forms import RegisterCarForm
+from carsharing.models import Car, SharingStation, CarCatalog
+from carsharing.forms import RegisterCarForm, RegisterStationInfoForm
 
 
 # Create your views here.
 def index(request):
-    cars = Car.objects.all()
+    stations = SharingStation.objects.all()
 
     context = {
-        'cars': cars
+        'stations': stations
     }
 
     return render(request, 'index.html', context)
@@ -25,6 +25,8 @@ def register_car(request):
         form = RegisterCarForm(request.POST, request.FILES)
 
         if form.is_valid():
+            station_obj = form.cleaned_data['station']
+
             desc_obj = form.save()
 
             car_obj = Car()
@@ -34,6 +36,14 @@ def register_car(request):
             car_obj.grade = form.cleaned_data['grade']
             car_obj.save()
 
+            if station_obj.catalog is None:
+                catalog = CarCatalog()
+                catalog.cars.add(car_obj)
+                catalog.save()
+                station_obj.catalog = catalog
+            else:
+                station_obj.catalog.cars.add(car_obj)
+
             return redirect('index')
 
     context = {
@@ -41,6 +51,39 @@ def register_car(request):
     }
 
     return render(request, 'register_car.html', context)
+
+
+def register_station(request):
+    if request.method == 'POST':
+        form = RegisterStationInfoForm(request.POST)
+
+        if form.is_valid():
+            station = SharingStation.objects.filter(name=form.cleaned_data['name'])
+
+            if station.exists():
+                context = {
+                    'form': RegisterStationInfoForm,
+                    'error': 'station that named is already exist'
+                }
+
+                return render(request, 'register_station.html', context)
+
+            catalog = CarCatalog()
+            catalog.save()
+
+            station = SharingStation()
+            station.name = form.cleaned_data['name']
+            #station.location = form.cleaned_data['location']
+            station.catalog = catalog
+            station.save()
+
+            return redirect('index')
+
+    context = {
+        'form': RegisterStationInfoForm
+    }
+
+    return render(request, 'register_station.html', context)
 
 
 def search(request):

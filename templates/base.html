@@ -25,7 +25,7 @@
             <a class="nav-link" href="{% url 'index' %}"><img class="menuicon" src="{% static 'house.svg' %}"/>Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'borrow_car' %}"><img class="menuicon" src="{% static '48688.svg' %}"/>Borrow</a>
+            <a class="nav-link" href="{% url 'borrow_car' %}"><img class="menuicon" src="{% static '48688.svg' %}"/>Borrow car</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{% url 'register_car' %}"><img class="menuicon" src="{% static '65251.svg' %}"/>Register car</a>
@@ -38,10 +38,9 @@
               {{ user.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item text-primary" href="#">Upload</a>
+                <a class="dropdown-item text-primary" href="{% url 'register_station' %}">Manage Station</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Profile</a>
-                <a class="dropdown-item" href="#">Favorites</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-danger" href="#">Logout</a>
             </div>

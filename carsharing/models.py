@@ -1,5 +1,6 @@
 from django.db import models
 from geoposition.fields import GeopositionField
+from django.utils.timezone import now
 
 
 class CarDescription(models.Model):
@@ -17,6 +18,9 @@ class Car(models.Model):
     license_plate = models.CharField(max_length=100)
     description = models.OneToOneField(CarDescription, on_delete=models.CASCADE)
 
+    # for sharing environment
+    available = models.BooleanField(default=True)
+
     def __str__(self):
         return '{0} - {1}, {2}, [{3}], Color: {4}' \
             .format(self.model, self.description.submodel, self.grade, self.license_plate,
@@ -24,21 +28,28 @@ class Car(models.Model):
 
 
 class CarCatalog(models.Model):
-    cars = models.ForeignKey(Car, on_delete=models.DO_NOTHING)
+    cars = models.ManyToManyField(Car, blank=True)
 
 
 class SharingStation(models.Model):
     name = models.CharField(max_length=100)
-    location = GeopositionField()
-    catalog = models.ForeignKey(CarCatalog, on_delete=models.CASCADE)
+    #location = GeopositionField()
+    catalog = models.OneToOneField(CarCatalog, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+
+class ShareTime(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
 
 
 class ShareHistory(models.Model):
     car = models.ForeignKey(Car, on_delete=models.DO_NOTHING)
     station = models.ForeignKey(SharingStation, on_delete=models.DO_NOTHING)
     fee = models.DecimalField(decimal_places=10, max_digits=10)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    share_time = models.ForeignKey(ShareTime, on_delete=models.CASCADE)
+    status = models.IntegerField()
+    # status// 0: reserved, 1: borrowed, 2: returned, 3: lender confirmed
