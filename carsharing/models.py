@@ -1,7 +1,5 @@
 from django.db import models
-from geoposition.fields import GeopositionField
-from django.utils.timezone import now
-
+from django.contrib.auth.models import User
 
 class CarDescription(models.Model):
     color = models.CharField(max_length=10)
@@ -53,3 +51,13 @@ class ShareHistory(models.Model):
     share_time = models.ForeignKey(ShareTime, on_delete=models.CASCADE)
     status = models.IntegerField()
     # status// 0: reserved, 1: borrowed, 2: returned, 3: lender confirmed
+
+
+class Lender(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    account_no = models.CharField(max_length=100)
+
+
+class Borrower(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    card_no = models.CharField(max_length=100)

@@ -1,9 +1,7 @@
 from django import forms
-from colorfield.fields import ColorField
 from carsharing import models
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-import datetime
 
 
 class SearchForm(forms.Form):
@@ -33,3 +31,17 @@ class RegisterStationInfoForm(forms.ModelForm):
     class Meta:
         model = models.SharingStation
         fields = ['name']
+
+
+class RegistrationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=False)
+
+        if commit:
+            user.save()
+
+        return user

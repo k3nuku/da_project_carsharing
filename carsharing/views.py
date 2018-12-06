@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from carsharing.forms import SearchForm
 from carsharing.models import Car, SharingStation, CarCatalog
-from carsharing.forms import RegisterCarForm, RegisterStationInfoForm
+from carsharing.forms import RegisterCarForm, RegisterStationInfoForm, RegistrationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 # Create your views here.
@@ -16,10 +18,29 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+def register_user(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+        else:
+            return HttpResponse('form is not valid')
+
+    context = {
+        'form': RegistrationForm
+    }
+
+    return render(request, 'register_user.html', context)
+
+
+@login_required
 def borrow_car(request):
     return render(request, 'borrow_car.html')
 
 
+@login_required
 def register_car(request):
     if request.method == 'POST':
         form = RegisterCarForm(request.POST, request.FILES)
@@ -53,6 +74,7 @@ def register_car(request):
     return render(request, 'register_car.html', context)
 
 
+@staff_member_required
 def register_station(request):
     if request.method == 'POST':
         form = RegisterStationInfoForm(request.POST)
@@ -96,3 +118,5 @@ def search(request):
             return render(request, 'index.html', {'cars': d1})
         else:
             return HttpResponse('no such car.')
+
+

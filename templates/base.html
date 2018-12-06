@@ -42,12 +42,12 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Profile</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="#">Logout</a>
+                <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
             </div>
         </li>
         {% else %}
         <li class="nav-item mr-2">
-            <a class="btn btn-primary btn-dark" href="" role="button">Login</a>
+            <a class="btn btn-primary btn-dark" href="{% url 'login' %}" role="button">Login</a>
         </li>
         {% endif %}
     </ul>

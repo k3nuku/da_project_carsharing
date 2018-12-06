@@ -19,13 +19,20 @@ from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
 from carsharing import views
+from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
-  url(r'^admin/', admin.site.urls, name='admin'),
   url(r'^$', views.index, name='index'),
-  url(r'^register/car$', views.register_car, name='register_car'),
+  url(r'^admin/', admin.site.urls, name='admin'),
   url(r'^borrow/car', views.borrow_car, name='borrow_car'),
-  url(r'^station/register$', views.register_station, name='register_station'),
+  url(r'^register/car$', views.register_car, name='register_car'),
+  url(r'^register/user$', views.register_user, name='register_user'),
+  url(r'^register/user/lender$', views.register_car, name='register_user_lender'),
+  url(r'^register/user/borrower$', views.register_car, name='register_user_borrower'),
+  url(r'^register/station$', views.register_station, name='register_station'),
+  url(r'^login/$', LoginView.as_view(template_name='login.html'), name='login'),
+  url(r'^logout/$', LogoutView.as_view(next_page='/'), name='logout'),
   path('search/', views.search, name='search')
 ]
 
