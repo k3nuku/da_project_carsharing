@@ -90,14 +90,10 @@ def register_user(request, user_type):
 
 @login_required
 def borrow_car(request):
-    if request.method == 'POST':
-        pass
+    if request.method == 'GET':
+        return redirect('search_car')
 
-    context = {
-        'form': forms.BorrowSearchForm
-    }
-
-    return render(request, 'borrow_car.html', context)
+    return HttpResponse('not implemented yet!')
 
 
 @login_required
@@ -168,13 +164,73 @@ def register_station(request):
     return render(request, 'register_station.html', context)
 
 
-def search(request):
-    form = forms.SearchForm(request.GET)
+def search_car(request):
+    if request.method == 'GET':
+        form = forms.BorrowSearchForm(request.GET)
+    else:
+        form = forms.BorrowSearchForm(request.POST)
 
     if form.is_valid():
-        d1 = Car.objects.filter(model=form.cleaned_data['query'])
+        query = form.cleaned_data['query']
 
-        if d1.exists():
-            return render(request, 'index.html', {'cars': d1})
-        else:
-            return HttpResponse('no such car.')
+        car_model_q = car_grade_q = car_license_q = car_color_q \
+            = car_sub_model_q = station_name_q = None
+
+        try:
+            car_model_q = Car.objects.filter(model__contains=query, available=True)
+        except ValueError:
+            pass  # perform semi full-text searching
+
+        try:
+            car_grade_q = Car.objects.filter(grade__lte=query, available=True)
+        except ValueError:
+            pass
+
+        try:
+            car_license_q = Car.objects.filter(license_plate__contains=query, available=True)
+        except ValueError:
+            pass
+
+        try:
+            car_color_q = Car.objects.filter(description__color__contains=query, available=True)
+        except ValueError:
+            pass
+
+        try:
+            car_sub_model_q = Car.objects.filter(description__sub_model__contains=query, available=True)
+        except ValueError:
+            pass
+
+        try:
+            station_name_q = SharingStation.objects.filter(name__contains=query, catalog__cars__available=True)
+        except ValueError:
+            pass
+
+            # station_location_q = SharingStation.objects.filter(location__contains=query)
+
+        search_result = (
+            car_model_q if car_model_q is not None else None,
+            car_grade_q if car_grade_q is not None else None,
+            car_license_q if car_license_q is not None else None,
+            car_color_q if car_color_q is not None else None,
+            car_sub_model_q if car_sub_model_q is not None else None,
+            station_name_q if station_name_q is not None else None
+        )
+
+        sr = list(set(list(filter(None, search_result))))
+
+        context = {
+            'form': forms.BorrowSearchForm,
+            'search_data': sr,
+            'non_search': False
+        }
+
+        return render(request, 'search_car.html', context)
+
+    context = {
+        'form': forms.BorrowSearchForm,
+        'non_search': True,
+        'cars': Car.objects.all().order_by('?')[:10]
+    }
+
+    return render(request, 'search_car.html', context)

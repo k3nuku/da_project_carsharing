@@ -4,7 +4,7 @@
 <div class="container p-5">
     <h1>Station Registration</h1>
     {{ form.error_message }}
-    <form method="post" action="{% url 'register_station' %}r">
+    <form method="post" action="{% url 'register_station' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="registration"/>

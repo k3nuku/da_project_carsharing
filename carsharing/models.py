@@ -55,11 +55,11 @@ class Borrower(models.Model):
     card_no = models.CharField(max_length=100)
 
 
-class ShareHistory(models.Model):
+class ShareInformation(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     lender = models.ForeignKey(Lender, on_delete=models.CASCADE)
     borrower = models.ForeignKey(Borrower, on_delete=models.CASCADE)
-    station = models.ForeignKey(SharingStation, on_delete=models.DO_NOTHING)
+    station = models.ForeignKey(SharingStation, on_delete=models.CASCADE)
     fee = models.DecimalField(decimal_places=10, max_digits=10)
     share_time = models.ForeignKey(ShareTime, on_delete=models.CASCADE)
     status = models.IntegerField()

@@ -38,8 +38,10 @@
               {{ user.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if user.is_staff %}
                 <a class="dropdown-item text-primary" href="{% url 'register_station' %}">Manage Station</a>
                 <div class="dropdown-divider"></div>
+                {% endif %}
                 <a class="dropdown-item" href="#">Profile</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
@@ -51,8 +53,8 @@
         </li>
         {% endif %}
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="/search/" method="get">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+    <form class="form-inline my-3 my-lg-0" action="/search/" method="get">
+        <input class="form-control mr-sm-2" type="search" placeholder="Find your car" aria-label="Search" name="query">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
     </div>

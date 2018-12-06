@@ -2,6 +2,7 @@ from django import forms
 from carsharing import models
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from datetimewidget.widgets import DateTimeWidget
 
 
 class SearchForm(forms.Form):
@@ -63,6 +64,6 @@ class RegistrationBorrowerForm(RegistrationForm):
 
 
 class BorrowSearchForm(forms.Form):
-    text_search = forms.CharField(max_length=250)
+    query = forms.CharField(max_length=250)
     start_time = forms.DateTimeField(required=False)
     duration = forms.TimeField(required=False)

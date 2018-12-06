@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container p-5">
+    <h2>Search your car</h2>
+    {{ form.error_message }}
+    <form method="post" action="{% url 'borrow_car' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Search"/>
+    </form>
+{% for station in stations %}
+{% if station.catalog.cars.all %}
+<h2>{{ station.name }} Station</h2>
+<hr class="featurette-divider">
+<div class="row">
+    {% for car in station.catalog.cars.all %}
+    <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ car.description.photo.url }}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">{{ car.model }} - {{ car.description.sub_model }}</h5>
+            <p class="card-text">Color: {{ car.description.color }}</p>
+            <p class="card-text">Grade: {{ car.grade }}</p>
+            <p class="card-text">Time: {{ car.start_date }} ~ {{ car.end_date }}</p>
+            <a href="{% url 'borrow_car' %}/{{ car.id }}" class="btn btn-primary">Borrow now</a>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<hr class="featurette-divider">
+{% endif %}
+{% endfor %}
+</div>
+{% endblock %}
