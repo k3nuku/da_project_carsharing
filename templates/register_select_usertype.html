@@ -2,12 +2,12 @@
 
 {% block body %}
 <div class="container p-5">
-    <h1>User registration</h1>
+    <h1>Select Service Type</h1>
     {{ form.error_message }}
-    <form method="post" action="{% url 'register_user' %}/{{ user_type }}">
+    <form method="post" action="{% url 'register_user' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Register"/>
+        <input type="submit" value="Go"/>
     </form>
 </div>
 {% endblock %}

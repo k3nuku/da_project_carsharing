@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from carsharing.forms import SearchForm
-from carsharing.models import Car, SharingStation, CarCatalog
-from carsharing.forms import RegisterCarForm, RegisterStationInfoForm, RegistrationForm
+from carsharing.models import Car, SharingStation, CarCatalog, Lender, Borrower
+from carsharing import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from carsharing import apps
 
 
+# 성공 시 팝업 표시
 # Create your views here.
 def index(request):
     stations = SharingStation.objects.all()
@@ -18,18 +19,70 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-def register_user(request):
+def register_user_select(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = forms.RegisterUserSelectionForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            reg_type = form.cleaned_data['reg_type']
+
+            if reg_type == 'reg_lender':
+                return redirect('/register/user/lender')
+            else:
+                return redirect('/register/user/borrower')
+
+    context = {
+        'form': forms.RegisterUserSelectionForm
+    }
+
+    return render(request, 'register_select_usertype.html', context)
+
+
+def register_user(request, user_type):
+    if request.method == 'POST':
+        if user_type == 'lender':
+            form = forms.RegistrationLenderForm(request.POST)
+        elif user_type == 'borrower':
+            form = forms.RegistrationBorrowerForm(request.POST)
+        else:
+            return HttpResponse('wrong form type')
+
+        if form.is_valid():
+            if user_type == 'lender':
+                account_no = form.cleaned_data['account_no']
+
+                user_obj = form.save()
+                lender_obj = Lender()
+                lender_obj.account_no = account_no
+                lender_obj.user = user_obj
+            elif user_type == 'borrower':
+                card_no = form.cleaned_data['card_no']
+
+                if not apps.check_card_validality(card_no):
+                    return HttpResponse('card is not valid')
+
+                user_obj = form.save()
+                borrower_obj = Borrower()
+                borrower_obj.card_no = card_no
+                borrower_obj.user = user_obj
+            else:
+                pass
+
+            # register user completed
             return redirect('login')
         else:
             return HttpResponse('form is not valid')
+    else:
+        if user_type == "lender":
+            form = forms.RegistrationLenderForm
+        elif user_type == "borrower":
+            form = forms.RegistrationBorrowerForm
+        else:
+            return HttpResponse('wrong form type')
 
     context = {
-        'form': RegistrationForm
+        'form': form,
+        'user_type': user_type
     }
 
     return render(request, 'register_user.html', context)
@@ -37,13 +90,16 @@ def register_user(request):
 
 @login_required
 def borrow_car(request):
+    if request.method == 'POST':
+        pass
+
     return render(request, 'borrow_car.html')
 
 
 @login_required
 def register_car(request):
     if request.method == 'POST':
-        form = RegisterCarForm(request.POST, request.FILES)
+        form = forms.RegisterCarForm(request.POST, request.FILES)
 
         if form.is_valid():
             station_obj = form.cleaned_data['station']
@@ -68,7 +124,7 @@ def register_car(request):
             return redirect('index')
 
     context = {
-      'form': RegisterCarForm
+      'form': forms.RegisterCarForm
     }
 
     return render(request, 'register_car.html', context)
@@ -77,14 +133,14 @@ def register_car(request):
 @staff_member_required
 def register_station(request):
     if request.method == 'POST':
-        form = RegisterStationInfoForm(request.POST)
+        form = forms.RegisterStationInfoForm(request.POST)
 
         if form.is_valid():
             station = SharingStation.objects.filter(name=form.cleaned_data['name'])
 
             if station.exists():
                 context = {
-                    'form': RegisterStationInfoForm,
+                    'form': forms.RegisterStationInfoForm,
                     'error': 'station that named is already exist'
                 }
 
@@ -102,14 +158,14 @@ def register_station(request):
             return redirect('index')
 
     context = {
-        'form': RegisterStationInfoForm
+        'form': forms.RegisterStationInfoForm
     }
 
     return render(request, 'register_station.html', context)
 
 
 def search(request):
-    form = SearchForm(request.GET)
+    form = forms.SearchForm(request.GET)
 
     if form.is_valid():
         d1 = Car.objects.filter(model=form.cleaned_data['query'])
@@ -118,5 +174,3 @@ def search(request):
             return render(request, 'index.html', {'cars': d1})
         else:
             return HttpResponse('no such car.')
-
-

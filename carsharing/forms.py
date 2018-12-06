@@ -11,7 +11,7 @@ class SearchForm(forms.Form):
 class RegisterCarForm(forms.ModelForm):
     class Meta:
         model = models.CarDescription
-        fields = ['color', 'submodel', 'photo']
+        fields = ['color', 'sub_model', 'photo']
 
     model = forms.CharField(max_length=100)
     grade = forms.IntegerField()
@@ -19,6 +19,13 @@ class RegisterCarForm(forms.ModelForm):
     station = forms.ModelChoiceField(queryset=models.SharingStation.objects.all())
     start_date = forms.DateTimeField()
     end_date = forms.DateTimeField()
+
+
+class RegisterUserSelectionForm(forms.Form):
+    reg_type = forms.ChoiceField(
+        choices=[('reg_lender', 'Lender'), ('reg_borrower', 'Borrower')],
+        widget=forms.RadioSelect()
+    )
 
 
 class RegisterCatalog(forms.ModelForm):
@@ -45,3 +52,17 @@ class RegistrationForm(UserCreationForm):
             user.save()
 
         return user
+
+
+class RegistrationLenderForm(RegistrationForm):
+    account_no = forms.CharField(max_length=100)
+
+
+class RegistrationBorrowerForm(RegistrationForm):
+    card_no = forms.CharField(max_length=100)
+
+
+class BorrowSearchForm(forms.Form):
+    text_search = forms.CharField(max_length=250)
+    start_time = forms.DateTimeField(required=False)
+    duration = forms.TimeField(required=False)
