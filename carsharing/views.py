@@ -93,7 +93,11 @@ def borrow_car(request):
     if request.method == 'POST':
         pass
 
-    return render(request, 'borrow_car.html')
+    context = {
+        'form': forms.BorrowSearchForm
+    }
+
+    return render(request, 'borrow_car.html', context)
 
 
 @login_required

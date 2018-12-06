@@ -7,7 +7,7 @@
     <form method="post" action="{% url 'borrow_car' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="registration"/>
+        <input type="submit" value="Search"/>
     </form>
 {% for station in stations %}
     {% if station.catalog.cars.all %}
