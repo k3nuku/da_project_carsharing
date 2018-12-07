@@ -20,13 +20,13 @@ def index(request):
 
     try:
         upcoming_contract += ShareInformation.objects.filter(
-            lender=Lender.objects.get(user=request.user))
+            lender=Lender.objects.get(user=request.user), status__gte=1)
     except:
         pass
 
     try:
         upcoming_contract += ShareInformation.objects.filter(
-            borrower=Borrower.objects.get(user=request.user))
+            borrower=Borrower.objects.get(user=request.user), status__gte=1)
     except:
         pass
 
