@@ -4,6 +4,7 @@
 <div class="container p-5">
     {{ error_message }}
     <h1>Car Registration</h1>
+    <hr class="featurette-divider">
     {{ form.error_message }}
     <form method="post" action="{% url 'register_car' %}" enctype="multipart/form-data">
         {% csrf_token %}

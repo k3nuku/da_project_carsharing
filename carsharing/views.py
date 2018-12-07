@@ -352,7 +352,7 @@ def search_car(request):
         return render(request, 'search_car.html', context)
 
     context = {
-        'form': forms.BorrowSearchForm,
+        # 'form': forms.BorrowSearchForm,
         'non_search': True,
         'cars': Car.objects.all().order_by('?')[:10]
     }

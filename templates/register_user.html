@@ -3,6 +3,7 @@
 {% block body %}
 <div class="container p-5">
     <h1>User registration</h1>
+    <hr class="featurette-divider">
     {{ form.error_message }}
     <form method="post" action="{% url 'register_user' %}/{{ user_type }}">
         {% csrf_token %}

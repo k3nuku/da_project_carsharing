@@ -3,12 +3,13 @@
 {% block body %}
 <div class="container p-5">
     <h2>Search your car</h2>
+    <hr class="featurette-divider">
     {{ error_message }}
     {{ form.error_message }}
     <form method="post" action="{% url 'borrow_car' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Search"/>
+        <!--<input type="submit" value="Search"/>-->
     </form>
 {% if non_search %}
     {% if cars.all %}
