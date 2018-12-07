@@ -18,8 +18,13 @@ class RegisterCarForm(forms.ModelForm):
     grade = forms.IntegerField()
     license_plate = forms.CharField(max_length=100)
     station = forms.ModelChoiceField(queryset=models.SharingStation.objects.all())
-    start_date = forms.DateTimeField()
-    end_date = forms.DateTimeField()
+
+    start_time = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M'],
+                                     widget=forms.TextInput(
+                                     attrs={'placeholder': 'YYYY-m-d H:M'}))
+
+    duration = forms.TimeField(widget=forms.TextInput(
+                               attrs={'placeholder': 'H:M'}))
 
 
 class RegisterUserSelectionForm(forms.Form):
@@ -41,13 +46,13 @@ class RegisterStationInfoForm(forms.ModelForm):
         fields = ['name']
 
 
-class RegistrationForm(UserCreationForm):
+class RegisterUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2')
 
     def save(self, commit=True):
-        user = super(RegistrationForm, self).save(commit=False)
+        user = super(RegisterUserForm, self).save(commit=False)
 
         if commit:
             user.save()
@@ -55,11 +60,11 @@ class RegistrationForm(UserCreationForm):
         return user
 
 
-class RegistrationLenderForm(RegistrationForm):
+class RegisterUserLenderForm(RegisterUserForm):
     account_no = forms.CharField(max_length=100)
 
 
-class RegistrationBorrowerForm(RegistrationForm):
+class RegisterUserBorrowerForm(RegisterUserForm):
     card_no = forms.CharField(max_length=100)
 
 
@@ -67,3 +72,12 @@ class BorrowSearchForm(forms.Form):
     query = forms.CharField(max_length=250)
     start_time = forms.DateTimeField(required=False)
     duration = forms.TimeField(required=False)
+
+
+class BorrowForm(forms.Form):
+    start_time = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M'],
+                                     widget=forms.TextInput(
+                                     attrs={'placeholder': 'YYYY-m-d H:M'}))
+
+    duration = forms.TimeField(widget=forms.TextInput(
+                               attrs={'placeholder': 'H:M'}))

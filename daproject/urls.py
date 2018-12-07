@@ -23,8 +23,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 urlpatterns = [
   url(r'^$', views.index, name='index'),
   url(r'^admin/', admin.site.urls, name='admin'),
-  url(r'^borrow/car', views.borrow_car, name='borrow_car'),
-  url(r'^borrow/car/(?P<car_id>\w{0,50})$', views.borrow_car, name='borrow_car_with_id'),
+  url(r'^borrow/car$', views.borrow_car_no_param, name='borrow_car'),
+  url(r'^borrow/car/(?P<car_id>[0-9]{0,50})$', views.borrow_car, name='borrow_car_with_id'),
   url(r'^register/car$', views.register_car, name='register_car'),
   url(r'^register/user$', views.register_user_select, name='register_user'),
   url(r'^register/user/(?P<user_type>\w{0,50})$', views.register_user, name='register_user_with_usertype'),

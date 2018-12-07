@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container p-5">
+<h1>Borrow car contract</h1>
+{{ form.error_message }}
+<div class="col-md-4">
+    <div class="card" style="width: 18rem;">
+      <img class="card-img-top" src="{{ car.description.photo.url }}" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">{{ car.model }} - {{ car.description.sub_model }}</h5>
+        <p class="card-text">Color: {{ car.description.color }}</p>
+        <p class="card-text">Station: {{ station.name }}</p>
+        <p class="card-text">Grade: {{ car.grade }}</p>
+        <p class="card-text">Time: {{ start_time }}</p>
+        <p class="card-text">Max duration: {{ max_duration }}</p>
+      </div>
+    </div>
+</div>
+<form method="post" action="{% url 'borrow_car' %}/{{ car.id }}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Borrow"/>
+</form>
+</div>
+{% endblock %}

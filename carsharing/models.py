@@ -2,6 +2,16 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class Lender(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    account_no = models.CharField(max_length=100)
+
+
+class Borrower(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    card_no = models.CharField(max_length=100)
+
+
 class CarDescription(models.Model):
     color = models.CharField(max_length=10)
     sub_model = models.CharField(max_length=50)
@@ -16,6 +26,7 @@ class Car(models.Model):
     grade = models.IntegerField()
     license_plate = models.CharField(max_length=100)
     description = models.OneToOneField(CarDescription, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Lender, on_delete=models.CASCADE)
 
     # for sharing environment
     available = models.BooleanField(default=True)
@@ -42,25 +53,15 @@ class SharingStation(models.Model):
 class ShareTime(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-
-
-class Lender(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    account_no = models.CharField(max_length=100)
-
-
-class Borrower(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    card_no = models.CharField(max_length=100)
+    duration = models.TimeField()
 
 
 class ShareInformation(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     lender = models.ForeignKey(Lender, on_delete=models.CASCADE)
-    borrower = models.ForeignKey(Borrower, on_delete=models.CASCADE)
+    borrower = models.ForeignKey(Borrower, on_delete=models.CASCADE, null=True)
     station = models.ForeignKey(SharingStation, on_delete=models.CASCADE)
-    fee = models.DecimalField(decimal_places=10, max_digits=10)
+    fee = models.IntegerField(null=True)
     share_time = models.ForeignKey(ShareTime, on_delete=models.CASCADE)
     status = models.IntegerField()
-    # status// 0: reserved, 1: borrowed, 2: returned, 3: lender confirmed
+    # status// 0: registered, 1: reserved, 2: borrowed, 3: returned, 4: lender confirmed
