@@ -16,10 +16,25 @@ borrow_mutex = Lock()
 # 성공 시 팝업 표시
 # Create your views here.
 def index(request):
+    upcoming_contract = []
+
+    try:
+        upcoming_contract += ShareInformation.objects.filter(
+            lender=Lender.objects.get(user=request.user))
+    except:
+        pass
+
+    try:
+        upcoming_contract += ShareInformation.objects.filter(
+            borrower=Borrower.objects.get(user=request.user))
+    except:
+        pass
+
     stations = SharingStation.objects.all()
 
     context = {
-        'stations': stations
+        'stations': stations,
+        'contracts': upcoming_contract
     }
 
     return render(request, 'index.html', context)
@@ -103,14 +118,24 @@ def borrow_car_no_param(request):
 
 @login_required
 def borrow_car(request, car_id):
+    if not apps.borrower(request.user):
+        context = {
+            'error_message': 'lender cannot borrow a car. Please login with borrower.'
+        }
+
+        return render(request, 'borrow_car.html', context)
+
     if request.method == 'POST':
         form = forms.BorrowForm(request.POST)
 
         if form.is_valid():
             try:
-                share_info_obj = ShareInformation.objects.get(car_id=car_id, status=0)
+                share_info_obj = ShareInformation.objects.get(car_id=car_id)
             except:
-                return HttpResponse('no such car information at sharinginfo')
+                return render(request, 'borrow_car.html',
+                              {
+                                  'error_message': 'No such car information at sharinginfo or you already did contract!'
+                              })
 
             borrow_mutex.acquire(1)  # lock acquire1
             if share_info_obj.status == 0:
@@ -169,6 +194,13 @@ def borrow_car(request, car_id):
 
 @login_required
 def register_car(request):
+    if not apps.lender(request.user):
+        context = {
+            'error_message': 'borrower cannot borrow a car. Please login with lender.'
+        }
+
+        return render(request, 'register_car.html', context)
+
     if request.method == 'POST':
         form = forms.RegisterCarForm(request.POST, request.FILES)
 
@@ -250,6 +282,10 @@ def register_station(request):
     }
 
     return render(request, 'register_station.html', context)
+
+
+def cancel_contract(request):
+    return HttpResponse('not yet implemented')
 
 
 def search_car(request):

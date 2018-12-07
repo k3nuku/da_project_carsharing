@@ -1,12 +1,38 @@
 {% extends 'base.html' %}
 
 {% block body %}
+{% if contracts.count < 1 %}
 <section class="jumbotron text-center">
     <div class="container">
         <h1 class="jumbotron-heading">A whole-new P2P Car-sharing System</h1>
         <p class="lead text-muted">Easy way. Pick your favorite car or register your car to share and earn money.</p>
     </div>
 </section>
+{% else %}
+<div class="album py-5">
+    <div class="container">
+    <h1>Upcoming contracts</h1>
+    <hr class="featurette-divider">
+            <div class="row">
+    {% for contract in contracts %}
+    <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ contract.car.description.photo.url }}" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">{{ contract.car.model }} - {{ contract.car.description.sub_model }}</h5>
+            <p class="card-text">Color: {{ contract.car.description.color }}</p>
+            <p class="card-text">Fee: {{ contract.fee }}</p>
+            <p class="card-text">Starts at: {{ contract.share_time.start_time }}</p>
+            <p class="card-text">Duration: {{ contract.share_time.duration }}</p>
+            <a href="{% url 'cancel_contract' %}/{{ contract.id }}" class="btn btn-danger">Cancel</a>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    </div>
+</div>
+{% endif %}
 <div class="album py-5">
     <div class="container">
     {% for station in stations %}

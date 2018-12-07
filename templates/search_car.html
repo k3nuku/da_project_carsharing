@@ -3,6 +3,7 @@
 {% block body %}
 <div class="container p-5">
     <h2>Search your car</h2>
+    {{ error_message }}
     {{ form.error_message }}
     <form method="post" action="{% url 'borrow_car' %}">
         {% csrf_token %}
