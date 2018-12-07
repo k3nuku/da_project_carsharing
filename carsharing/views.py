@@ -34,7 +34,8 @@ def index(request):
 
     context = {
         'stations': stations,
-        'contracts': upcoming_contract
+        'contracts': upcoming_contract,
+        'null_contracts': True if len(upcoming_contract) < 1 else False
     }
 
     return render(request, 'index.html', context)

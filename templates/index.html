@@ -1,15 +1,8 @@
 {% extends 'base.html' %}
 
 {% block body %}
-{% if contracts.count < 1 %}
-<section class="jumbotron text-center">
-    <div class="container">
-        <h1 class="jumbotron-heading">A whole-new P2P Car-sharing System</h1>
-        <p class="lead text-muted">Easy way. Pick your favorite car or register your car to share and earn money.</p>
-    </div>
-</section>
-{% else %}
-<div class="album py-5">
+{% if not null_contracts %}
+    <div class="album py-5">
     <div class="container">
     <h1>Upcoming contracts</h1>
     <hr class="featurette-divider">
@@ -32,6 +25,13 @@
     </div>
     </div>
 </div>
+{% else %}
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">A whole-new P2P Car-sharing System</h1>
+        <p class="lead text-muted">Easy way. Pick your favorite car or register your car to share and earn money.</p>
+    </div>
+</section>
 {% endif %}
 <div class="album py-5">
     <div class="container">
