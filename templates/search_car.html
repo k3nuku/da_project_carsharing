@@ -2,15 +2,15 @@
 
 {% block body %}
 <div class="container p-5">
-    <h2>Search your car</h2>
+<!--    <h2>Search your car</h2>
     <hr class="featurette-divider">
     {{ error_message }}
     {{ form.error_message }}
     <form method="post" action="{% url 'borrow_car' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <!--<input type="submit" value="Search"/>-->
-    </form>
+        <input type="submit" value="Search"/>
+    </form>-->
 {% if non_search %}
     {% if cars.all %}
     <div class="row">
@@ -32,8 +32,9 @@
     </div>
     {% endif %}
 {% else %}
+    <div class="row">
     {% for searches in search_data %}
-        {% for search in searches.all %}
+    {% for search in searches.all %}
     {% if search %}
       <div class="col-md-4">
         <div class="card" style="width: 18rem;">
@@ -50,6 +51,7 @@
     {% endif %}
     {% endfor %}
     {% endfor %}
+    </div>
 {% endif %}
 </div>
 {% endblock %}
